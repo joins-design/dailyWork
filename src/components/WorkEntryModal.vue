@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { reactive, watch } from 'vue'
 import type { DailyStatus, EntryForm } from '../types'
 
@@ -89,7 +89,7 @@ const submit = () => {
 </script>
 
 <template>
-  <div v-if="open" class="modal-overlay" @click.self="emit('close')">
+  <div v-if="open" class="modal-overlay">
     <section class="modal-card">
       <header class="modal-head">
         <h2>{{ mode === 'create' ? '업무 등록' : '업무 수정' }}</h2>
