@@ -37,15 +37,16 @@ jobs:
           if [ -z "$URL" ]; then
             URL="${{ secrets.VITE_API_BASE_URL }}"
           fi
-          if [ -z "$URL" ]; then
-            echo "VITE_API_BASE_URL is not set."
-            echo "Set repository variable OR repository secret VITE_API_BASE_URL."
-            echo "Example: https://daily-worklog-api.onrender.com/api"
-            exit 1
+          if [ -n "$URL" ]; then
+            echo "Using remote API endpoint."
+            echo "VITE_API_BASE_URL=$URL" >> $GITHUB_ENV
+            echo "VITE_API_USE_LOCAL_FALLBACK=false" >> $GITHUB_ENV
+          else
+            echo "VITE_API_BASE_URL is not set. Building with local fallback mode."
+            echo "VITE_API_BASE_URL=" >> $GITHUB_ENV
+            echo "VITE_API_USE_LOCAL_FALLBACK=true" >> $GITHUB_ENV
           fi
-          echo "VITE_API_BASE_URL=$URL" >> $GITHUB_ENV
           echo "VITE_API_TIMEOUT_MS=10000" >> $GITHUB_ENV
-          echo "VITE_API_USE_LOCAL_FALLBACK=false" >> $GITHUB_ENV
 
       - name: Build
         run: npm run build
