@@ -1,4 +1,4 @@
-﻿import type { DailyCard, DownloadFilters, EntryForm, WorkEntry } from '../types'
+import type { DailyCard, DownloadFilters, EntryForm, WorkEntry } from '../types'
 import { toWorkEntryPayload, workEntriesApi } from '../api/workEntriesApi'
 
 export const createDefaultForm = (date: string): EntryForm => ({
@@ -76,7 +76,17 @@ export const queryDailyCards = async (date: string, assignee = '전체'): Promis
 }
 
 export const queryDownloadRows = async (filters: DownloadFilters): Promise<WorkEntry[]> => {
-  return workEntriesApi.getDownloadEntries(filters)
+  const rows = await workEntriesApi.getDownloadEntries(filters)
+
+  return [...rows].sort((a, b) => {
+    const byRequestDate = a.requestDate.localeCompare(b.requestDate)
+    if (byRequestDate !== 0) return byRequestDate
+
+    const byDate = a.date.localeCompare(b.date)
+    if (byDate !== 0) return byDate
+
+    return a.id.localeCompare(b.id)
+  })
 }
 
 export const getEntryById = async (id: string): Promise<WorkEntry | null> => {
